@@ -8,3 +8,4 @@ namespace RecipeBox.Models
         public Recipe Recipe { get; set; }
         public User User { get; set; }
     }
+}
