@@ -22,7 +22,7 @@ namespace RecipeBox.Controllers
     //updated constructor
     public RecipesController(UserManager<ApplicationUser> userManager, RecipeBoxContext db)
     {
-      _userManager = userManager;
+      
       _db = db;
     }
 
@@ -31,8 +31,8 @@ namespace RecipeBox.Controllers
     {
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-      var CategoryRecipe = _db.Recipes.Where(entry => entry.Category.Id == currentUser.Id);
-      return View(CategoryRecipe);
+      var UserRecipe = _db.Recipes.Where(entry => entry.User.Id == currentUser.Id);
+      return View(UserRecipe);
     }
 
     public ActionResult Create()
@@ -47,7 +47,7 @@ namespace RecipeBox.Controllers
     {
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-      recipe.Category = currentUser;
+      recipe.User = currentUser;
       _db.Recipes.Add(recipe);
       if (CategoryId != 0)
       {
