@@ -31,8 +31,8 @@ namespace RecipeBox.Controllers
     {
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-      var AccountRecipes = _db.Recipes.Where(entry => entry.Account.Id == currentUser.Id);
-      return View(AccountRecipes);
+      var CategoryRecipe = _db.Recipes.Where(entry => entry.Category.Id == currentUser.Id);
+      return View(CategoryRecipe);
     }
 
     public ActionResult Create()
@@ -43,15 +43,15 @@ namespace RecipeBox.Controllers
 
     //updated Create post method
     [HttpPost]
-    public async Task<ActionResult> Create(Recipe recipe, int AccountId)
+    public async Task<ActionResult> Create(Recipe recipe, int CategoryId)
     {
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-      recipe.Account = currentUser;
+      recipe.Category = currentUser;
       _db.Recipes.Add(recipe);
-      if (AccountId != 0)
+      if (CategoryId != 0)
       {
-        _db.AccountRecipe.Add(new AccountRecipe() { AccountId = AccountId, RecipeId = recipe.RecipeId });
+        _db.CategoryRecipe.Add(new CategoryRecipe() { CategoryId = CategoryId, RecipeId = recipe.RecipeId });
       }
       _db.SaveChanges();
       return RedirectToAction("Index");
@@ -60,8 +60,8 @@ namespace RecipeBox.Controllers
     public ActionResult Details(int id)
     {
       var thisRecipe = _db.Recipes
-          .Include(recipe => recipe.Accounts)
-          .ThenInclude(join => join.Account)
+          .Include(recipe => recipe.Categories)
+          .ThenInclude(join => join.Category)
           .FirstOrDefault(recipe => recipe.RecipeId == id);
       return View(thisRecipe);
     }
@@ -74,11 +74,11 @@ namespace RecipeBox.Controllers
     }
 
     [HttpPost]
-    public ActionResult Edit(Recipe recipe, int AccountId)
+    public ActionResult Edit(Recipe recipe, int CategoryId)
     {
-      if (AccountId != 0)
+      if (CategoryId != 0)
       {
-        _db.AccountRecipe.Add(new AccountRecipe() { AccountId = AccountId, RecipeId = recipe.RecipeId });
+        _db.CategoryRecipe.Add(new CategoryRecipe() { CategoryId = CategoryId, RecipeId = recipe.RecipeId });
       }
       _db.Entry(recipe).State = EntityState.Modified;
       _db.SaveChanges();
@@ -93,11 +93,11 @@ namespace RecipeBox.Controllers
     }
 
     [HttpPost]
-    public ActionResult AddUser(Recipe recipe, int AccountId)
+    public ActionResult AddUser(Recipe recipe, int CategoryId)
     {
-      if (AccountId != 0)
+      if (CategoryId != 0)
       {
-        _db.AccountRecipe.Add(new AccountRecipe() { AccountId = AccountId, RecipeId = recipe.RecipeId });
+        _db.CategoryRecipe.Add(new CategoryRecipe() { CategoryId = CategoryId, RecipeId = recipe.RecipeId });
       }
       _db.SaveChanges();
       return RedirectToAction("Index");
@@ -121,8 +121,8 @@ namespace RecipeBox.Controllers
     [HttpPost]
     public ActionResult DeleteUser(int joinId)
     {
-      var joinEntry = _db.AccountRecipe.FirstOrDefault(entry => entry.AccountRecipeId == joinId);
-      _db.AccountRecipe.Remove(joinEntry);
+      var joinEntry = _db.CategoryRecipe.FirstOrDefault(entry => entry.CategoryRecipeId == joinId);
+      _db.CategoryRecipe.Remove(joinEntry);
       _db.SaveChanges();
       return RedirectToAction("Index");
     }
