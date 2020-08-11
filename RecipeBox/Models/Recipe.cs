@@ -11,7 +11,7 @@ namespace RecipeBox.Models
 
         public int RecipeId { get; set; }
         public string Description { get; set; }
-        public virtual ApplicationUser Category { get; set; } //new line
+        public virtual ApplicationUser User { get; set; } //new line
 
         public ICollection<CategoryRecipe> Categories { get;}
     }
