@@ -31,8 +31,8 @@ namespace RecipeBox.Controllers
     {
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-      var userRecipes = _db.Recipes.Where(entry => entry.User.Id == currentUser.Id);
-      return View(userRecipes);
+      var AccountRecipes = _db.Recipes.Where(entry => entry.Account.Id == currentUser.Id);
+      return View(AccountRecipes);
     }
 
     public ActionResult Create()
@@ -43,15 +43,15 @@ namespace RecipeBox.Controllers
 
     //updated Create post method
     [HttpPost]
-    public async Task<ActionResult> Create(Recipe recipe, int UserId)
+    public async Task<ActionResult> Create(Recipe recipe, int AccountId)
     {
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-      recipe.User = currentUser;
+      recipe.Account = currentUser;
       _db.Recipes.Add(recipe);
-      if (UserId != 0)
+      if (AccountId != 0)
       {
-        _db.UserRecipe.Add(new UserRecipe() { UserId = UserId, RecipeId = recipe.RecipeId });
+        _db.AccountRecipe.Add(new AccountRecipe() { AccountId = AccountId, RecipeId = recipe.RecipeId });
       }
       _db.SaveChanges();
       return RedirectToAction("Index");
@@ -60,8 +60,8 @@ namespace RecipeBox.Controllers
     public ActionResult Details(int id)
     {
       var thisRecipe = _db.Recipes
-          .Include(recipe => recipe.Users)
-          .ThenInclude(join => join.User)
+          .Include(recipe => recipe.Accounts)
+          .ThenInclude(join => join.Account)
           .FirstOrDefault(recipe => recipe.RecipeId == id);
       return View(thisRecipe);
     }
@@ -74,11 +74,11 @@ namespace RecipeBox.Controllers
     }
 
     [HttpPost]
-    public ActionResult Edit(Recipe recipe, int UserId)
+    public ActionResult Edit(Recipe recipe, int AccountId)
     {
-      if (UserId != 0)
+      if (AccountId != 0)
       {
-        _db.UserRecipe.Add(new UserRecipe() { UserId = UserId, RecipeId = recipe.RecipeId });
+        _db.AccountRecipe.Add(new AccountRecipe() { AccountId = AccountId, RecipeId = recipe.RecipeId });
       }
       _db.Entry(recipe).State = EntityState.Modified;
       _db.SaveChanges();
@@ -87,17 +87,17 @@ namespace RecipeBox.Controllers
 
     public ActionResult AddUser(int id)
     {
-      var thisRecipe = _db.Recipes.FirstOrDefault(Recipes => recipe.RecipeId == id);
+      var thisRecipe = _db.Recipes.FirstOrDefault(recipes => recipes.RecipeId == id);
       ViewBag.UserId = new SelectList(_db.Users, "UserId", "Name");
       return View(thisRecipe);
     }
 
     [HttpPost]
-    public ActionResult AddUser(Recipe recipe, int UserId)
+    public ActionResult AddUser(Recipe recipe, int AccountId)
     {
-      if (UserId != 0)
+      if (AccountId != 0)
       {
-        _db.UserRecipe.Add(new UserRecipe() { UserId = UserId, RecipeId = recipe.RecipeId });
+        _db.AccountRecipe.Add(new AccountRecipe() { AccountId = AccountId, RecipeId = recipe.RecipeId });
       }
       _db.SaveChanges();
       return RedirectToAction("Index");
@@ -105,15 +105,15 @@ namespace RecipeBox.Controllers
 
     public ActionResult Delete(int id)
     {
-      var thisRecipe = _db.Recipes.FirstOrDefault(recipe => recipse.RecipeId == id);
+      var thisRecipe = _db.Recipes.FirstOrDefault(recipe => recipe.RecipeId == id);
       return View(thisRecipe);
     }
 
     [HttpPost, ActionName("Delete")]
     public ActionResult DeleteConfirmed(int id)
     {
-      var thisRecipe = _db.Recipes.FirstOrDefault(recipe => recipes.recipeId == id);
-      _db.Recipe.Remove(thisRecipe);
+      var thisRecipe = _db.Recipes.FirstOrDefault(recipes => recipes.RecipeId == id);
+      _db.Recipes.Remove(thisRecipe);
       _db.SaveChanges();
       return RedirectToAction("Index");
     }
@@ -121,8 +121,8 @@ namespace RecipeBox.Controllers
     [HttpPost]
     public ActionResult DeleteUser(int joinId)
     {
-      var joinEntry = _db.UserRecipe.FirstOrDefault(entry => entry.UserRecipeId == joinId);
-      _db.UserRecipe.Remove(joinEntry);
+      var joinEntry = _db.AccountRecipe.FirstOrDefault(entry => entry.AccountRecipeId == joinId);
+      _db.AccountRecipe.Remove(joinEntry);
       _db.SaveChanges();
       return RedirectToAction("Index");
     }

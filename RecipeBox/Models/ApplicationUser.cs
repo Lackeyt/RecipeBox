@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace Recipebox.Models
+namespace RecipeBox.Models
 {
   public class ApplicationUser : IdentityUser
   {
