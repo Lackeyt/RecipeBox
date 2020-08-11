@@ -11,6 +11,8 @@
     <p>Hello @User.Identity.Name!</p>
     @using (Html.BeginForm("LogOff", "Account"))
     {
+        @Html.ActionLink("See all Categories", "Index", "Categories")<br>
+        @Html.ActionLink("See all Recipes", "Index", "Recipes")<br>
         <input type="submit" class="btn btn-default" value="Log out" />
     }
 }
@@ -18,4 +20,5 @@ else
 {
     <p>@Html.ActionLink("Register", "Register")</p>
     <p>@Html.ActionLink("Log in", "Login")</p>
+    
 }

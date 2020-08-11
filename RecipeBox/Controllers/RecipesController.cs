@@ -22,7 +22,7 @@ namespace RecipeBox.Controllers
     //updated constructor
     public RecipesController(UserManager<ApplicationUser> userManager, RecipeBoxContext db)
     {
-      
+      _userManager = userManager;
       _db = db;
     }
 
