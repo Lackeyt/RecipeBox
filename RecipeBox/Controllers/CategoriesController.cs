@@ -65,6 +65,24 @@ namespace RecipeBox.Controllers
       return RedirectToAction("Index");
     }
 
+    public ActionResult AddRecipe(int id)
+    {
+      var thisCategory = _db.Categories.FirstOrDefault(categories => categories.CategoryId == id);
+      ViewBag.RecipeId = new SelectList(_db.Recipes, "RecipeId", "Description");
+      return View(thisCategory);
+    }
+
+    [HttpPost]
+    public ActionResult AddRecipe(Category category, int RecipeId)
+    {
+      if (RecipeId != 0)
+      {
+        _db.CategoryRecipe.Add(new CategoryRecipe() { RecipeId = RecipeId, CategoryId = category.CategoryId });
+      }
+      _db.SaveChanges();
+      return RedirectToAction("Index");
+    }
+
     public ActionResult Delete(int id)
     {
       var thisCategory = _db.Categories.FirstOrDefault(category => category.CategoryId == id);
@@ -76,6 +94,15 @@ namespace RecipeBox.Controllers
     {
       var thisCategory = _db.Categories.FirstOrDefault(category => category.CategoryId == id);
       _db.Categories.Remove(thisCategory);
+      _db.SaveChanges();
+      return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public ActionResult DeleteRecipe(int joinId)
+    {
+      var joinEntry = _db.CategoryRecipe.FirstOrDefault(entry => entry.CategoryRecipeId == joinId);
+      _db.CategoryRecipe.Remove(joinEntry);
       _db.SaveChanges();
       return RedirectToAction("Index");
     }
