@@ -85,15 +85,15 @@ namespace RecipeBox.Controllers
       return RedirectToAction("Index");
     }
 
-    public ActionResult AddUser(int id)
+    public ActionResult AddCategory(int id)
     {
       var thisRecipe = _db.Recipes.FirstOrDefault(recipes => recipes.RecipeId == id);
-      ViewBag.UserId = new SelectList(_db.Users, "UserId", "Name");
+      ViewBag.CategoryId = new SelectList(_db.Categories, "CategoryId", "Name");
       return View(thisRecipe);
     }
 
     [HttpPost]
-    public ActionResult AddUser(Recipe recipe, int CategoryId)
+    public ActionResult AddCategory(Recipe recipe, int CategoryId)
     {
       if (CategoryId != 0)
       {

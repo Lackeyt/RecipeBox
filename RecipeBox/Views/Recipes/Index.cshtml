@@ -2,5 +2,23 @@
   Layout = "_Layout";
 }
 
-@Html.ActionLink("See all Categories", "Index", "Categories")<br>
-@Html.ActionLink("See all Recipes", "Index", "Recipes")<br>
+@using RecipeBox.Models;
+@model IEnumerable<RecipeBox.Models.Recipe>
+
+<h1>Recipes for @User.Identity.Name</h1>
+
+@if (Model.Any())
+{
+    @foreach (Recipe recipe in Model)
+    {
+      <p><h3>@Html.ActionLink($"{recipe.Description}", "Details", new { id = recipe.RecipeId })</h3></p>
+    }
+} 
+else
+{
+  <h3>No Recipes have been added yet!</h3>
+}
+
+<p>@Html.ActionLink("Add New Recipe", "Create")</p>
+<p>@Html.ActionLink("See all Categories", "Index", "Categories")</p>
+<p>@Html.ActionLink("See all Recipes", "Index", "Recipes")</p>

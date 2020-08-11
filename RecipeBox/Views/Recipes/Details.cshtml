@@ -15,19 +15,18 @@
 else
 {
   <h4>Categories the recipe belongs to:</h4>
-  <ul>
   @foreach(var join in Model.Categories)
   {
-    <li>@join.Category.Name</li>
+    @join.Category.Name
     @using (Html.BeginForm("DeleteCategory", "Recipes"))
     {
       @Html.Hidden("joinId", @join.CategoryRecipeId)
       <input type="submit" value="Delete"/>
     }
   }
-  </ul>
 }
 
 <p>@Html.ActionLink("Back to list", "Index")</p>
-<p>@Html.ActionLink("Edit Item", "Edit", new { id = Model.RecipeId })</p>
+<p>@Html.ActionLink("Edit Recipe", "Edit", new { id = Model.RecipeId })</p>
+<p>@Html.ActionLink("Delete Recipe", "Delete", new { id = Model.RecipeId })</p>
 <p>@Html.ActionLink("Add a Category", "AddCategory", new { id = Model.RecipeId })</p>
